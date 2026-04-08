@@ -157,9 +157,9 @@ paths:
   # Modify these paths to match your system.
 
   # Base directory for outputs
-  output_dir: data
+  output_dir: "/Genomics/argo/users/dm5950/out/unconditional_harvest_lipopeptides"
   # The input dataset file.
-  dataset: "../tests/test_data/LOTUS_truncated.txt"
+  dataset: "/Genomics/argo/users/dm5950/data/collected_compounds.txt"
   # File containing data from PubChem.
   pubchem_tsv_file: "../tests/test_data/PubChem_truncated.tsv"
 
