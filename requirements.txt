@@ -131,3 +131,8 @@ zipp==3.19.0
 einops==0.6.0
 opt_einsum==3.3.0
 s4dd @ git+https://github.com/GuptaVishu2002/s4-for-de-novo-drug-design.git@fix-module-library-packaging
+
+aiohttp==3.13.5
+asyncio==4.0.0
+attrs==26.1.0
+typing-extensions==4.15.0
