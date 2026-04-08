@@ -2,7 +2,7 @@
 # This file is provided as a convenience for users and CI workflows
 # used to working with conda environments.
 
-name: 'clm'
+name: 'clm-harvest'
 
 channels:
   - conda-forge
