@@ -12,4 +12,5 @@ dependencies:
   - python=3.10
   - pip
   - pip:
-    - -r requirements.txt
+    - -r requirements_core.txt
+    - -r requirements_extra.txt
