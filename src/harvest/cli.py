@@ -171,6 +171,7 @@ def cli(argv: list[str] | None = None) -> None:
 
     # Make sure out_dir exists
     out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     # Configure logger and add file handler
     setup_logging(level=args.log_level)
