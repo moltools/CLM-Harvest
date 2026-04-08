@@ -3,11 +3,12 @@ requires = ["setuptools>=61.0", "setuptools_scm>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "skinniderlab-clm"
+name = "clm-harvest"
 authors = [
-  {name="Michael Skinnider", email="skinnider@princeton.edu"}
+    {name="Michael Skinnider", email="skinnider@princeton.edu"},
+    {name="David Meijer", email="dm5950@princeton.edu"},
 ]
-description = "NPS-generation is a tool to train and evaluate deep generative models of novel psychoactive substances"
+description = "De novo generation of specialized metabolites for biosynthetic gene clusters"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -42,9 +43,14 @@ dynamic = ["version"]
 
 [project.scripts]
 clm = "clm.__main__:main"
+harvest = "harvest.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["clm", "clm.*", "harvest", "harvest.*"]
 
 [tool.setuptools_scm]
 write_to = "src/clm/_version.py"
