@@ -108,7 +108,7 @@ echo "CPUs: ${{OMP_NUM_THREADS:-{cpus}}}; Mem limit: {mem}"
 """
 
     sbatch_cmd.extend(["--export", f"ALL,OMP_NUM_THREADS={cpus},MKL_NUM_THREADS={cpus},PYTHONUNBUFFERED=1"])
-    sbatch_cmd.append(["--wrap", wrap_script])
+    sbatch_cmd.extend(["--wrap", wrap_script])
 
     if slurm_args.dry_run:
         print("[DRY RUN] Would submit Harvest job to slurm with:")
