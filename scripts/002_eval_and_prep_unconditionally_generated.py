@@ -24,18 +24,6 @@ def main() -> None:
     """
     args = cli()
 
-    # For true and sampled:
-    # - show distributions molecular weights (density plot)
-    # - show distributions generated atom counts (bar plot %; major ones + other)
-    # - show for generated compound the distribution of counts regenerated/resampled SMILES with log10 x-axis
-    # - select for all unique comounds with <0.8 Tc (r=3, b=2048) to any real compound
-    # - select again but additionally make sure that not any pair in picked has >=0.8 Tc (r=3, b=2048)
-
-    # Separate script:
-    # - parse real and picked sampled lipopeptides with RetroMol
-    # - visualize RetroMol results (monomer counts etc.)
-    # - create training set based on picked with any coverage, and a fitlered set where every compound has coverage >0.7
-
 
 if __name__ == "__main__":
     main()
