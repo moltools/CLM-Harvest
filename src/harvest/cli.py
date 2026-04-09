@@ -63,7 +63,7 @@ def _submit_via_slurm(slurm_args: argparse.Namespace, cli_argv: list[str]) -> No
     Submit the current Harvest command to Slurm using sbatch.
 
     :param slurm_args: Parsed command line arguments (including slurm options).
-    :param cli-argv: List of command line arguments to pass to the inner Harvest CLI.
+    :param cli_argv: List of command line arguments to pass to the inner Harvest CLI.
     """
     python = sys.executable
 
