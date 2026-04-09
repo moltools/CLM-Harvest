@@ -68,7 +68,7 @@ def _submit_via_slurm(slurm_args: argparse.Namespace, cli_argv: list[str]) -> No
     python = sys.executable
 
     # Get output directory from CLI args (fallback to cwd for commands without --out-dir)
-    output_dir = os.path.abspath(getattr(slurm_args, "out", os.getcwd()))
+    output_dir = os.path.abspath(getattr(slurm_args, "out_dir", os.getcwd()))
 
     # Ensure log directory exists
     os.makedirs(os.path.join(output_dir, "logs"), exist_ok=True)
