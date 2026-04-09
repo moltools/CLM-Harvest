@@ -276,9 +276,10 @@ class Compound:
     :param smiles: SMILES string.
     """
 
-    smiles: str
-    mol: Mol = field(init=False, repr=False, compare=False)
-    smiles_no_stereo: str = field(init=False, compare=False)
+    smiles: str = field(compare=False)
+
+    mol: Chem.Mol = field(init=False, compare=False, repr=False)
+    smiles_no_stereo: str = field(init=False, compare=False, repr=False)
     inchikey: str = field(init=False)
 
     def __post_init__(self) -> None:
