@@ -4,6 +4,7 @@ import json
 import logging
 import yaml
 from pathlib import Path
+from typing import Any, Generator
 
 from tqdm import tqdm
 
@@ -88,3 +89,18 @@ def cmd_retromol(
 
     if jsonl_fh:
         jsonl_fh.close()
+
+
+def iter_jsonl(path: str) -> Generator[dict[str, Any], None, None]:
+    """
+    Generator that yields JSON objects from a JSONL file.
+
+    :param path: Path to JSONL file.
+    :yield: JSON object from each line of the file.
+    """
+    with open(path, "rb") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            yield json.loads(line)
