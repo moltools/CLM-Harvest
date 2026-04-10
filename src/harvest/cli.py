@@ -11,6 +11,7 @@ from pathlib import Path
 
 from harvest.logging import setup_logging, add_file_handler
 from harvest.loader import ModelType
+from harvest.retromol import cmd_retromol
 from harvest.sampling import cmd_sample_clm
 
 
@@ -165,6 +166,22 @@ def cli(argv: list[str] | None = None) -> None:
         out_dir=args.out_dir,
         device=args.device,
         num_samples=args.num_samples,
+    ))
+
+    # Subparser for running RetroMol
+    pretromol = sub.add_parser("retromol", parents=[common], help="Run RetroMol.")
+    pretromol.add_argument("--data-path", type=str, required=True, help="Path to input file containing SMILES strings to run retrosynthesis on.")
+    pretromol.add_argument("--reaction-rules-path", type=str, required=True, help="Path to file containing reaction rules for RetroMol.")
+    pretromol.add_argument("--matching-rules-path", type=str, required=True, help="Path to file containing matching rules for RetroMol.")
+    pretromol.add_argument("--smiles-col", type=str, default="smiles", help="Name of column in input file containing SMILES strings (default: 'smiles').")
+    pretromol.add_argument("--num-workers", type=int, default=1, help="Number of worker processes to use for retrosynthesis (default: 1).")
+    pretromol.set_defaults(func=lambda args: cmd_retromol(
+        data_path=args.data_path,
+        reaction_rules_path=args.reaction_rules_path,
+        matching_rules_path=args.matching_rules_path,
+        out_dir=args.out_dir,
+        smiles_col=args.smiles_col,
+        num_workers=args.num_workers,
     ))
 
     args = parser.parse_args(argv)
