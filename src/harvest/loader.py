@@ -12,6 +12,7 @@ from clm.models import RNN
 
 CLM_INPUTS_VOCAB_PATTERN = r"^train_(.+)_SMILES_(\d+)\.vocabulary$"
 CLM_MODELS_MODEL_PATTERN = r"^(.+)_SMILES_(\d+)_\d+_model\.pt$"
+CLM_MODELS_LOSS_PATTERN = r"^(.+)_SMILES_(\d+)_\d+_loss\.csv\.gz$"
 
 
 class ModelType(Enum):
@@ -32,11 +33,13 @@ class Fold:
     :param fold_iter: Fold iteration number.
     :param vocab_path: Path to the fold's vocabulary file.
     :param model_path: Path to the fold's model file.
+    :param loss_path: Path to the fold's loss file.
     """
 
     fold_iter: int
     vocab_path: Path
     model_path: Path
+    loss_path: Path
 
 
 @dataclass(frozen=True)
@@ -153,16 +156,41 @@ def load_clm(
                 dataset_name=dataset_name,
             )
 
+    # Additionally, find the loss files
+    loss_re = re.compile(CLM_MODELS_LOSS_PATTERN)
+    loss_paths = {}
+    for path in models_path.iterdir():
+        if not path.is_file():
+            continue
+
+        match = loss_re.match(str(path.name))
+        if match:
+            dataset_name = match.group(1)
+            fold_iter = int(match.group(2))
+
+            if fold_iter in loss_paths:
+                raise KeyError(f"Fold {fold_iter} already exists in losses!")
+
+            loss_paths[fold_iter] = dict(
+                loss_path=str(path),
+                dataset_name=dataset_name,
+            )
+
     # Check that we found at least one vocab and at least one model
     assert len(vocab_paths) > 0, "Need at least one vocab file to load a model!"
     assert len(model_paths) > 0, "Need at least one model file to load a model!"
+    assert len(loss_paths) > 0, "Need at least one loss file to load a model!"
 
-    # Check that vocab and model folds match; same number of files and same fold numbers
+    # Check that vocab, model, and loss folds match; same number of files and same fold numbers
     assert set(vocab_paths.keys()) == set(model_paths.keys()), f"Vocab and model folds do not match!"
+    assert set(model_paths.keys()) == set(loss_paths.keys()), f"Vocab and loss folds do not match!"
 
-    # Check that all found vocab and model files are associated to the same dataset
-    dataset_names = set([v["dataset_name"] for v in vocab_paths.values()] + [m["dataset_name"] for m in model_paths.values()])
-    assert len(dataset_names) == 1, f"Found vocab and model files associated to multiple datasets: {dataset_names}!"
+    # Check that all found vocab, model, and loss files are associated to the same dataset
+    dataset_names = \
+        set([v["dataset_name"] for v in vocab_paths.values()] \
+            + [m["dataset_name"] for m in model_paths.values()] \
+            + [l["dataset_name"] for l in loss_paths.values()])
+    assert len(dataset_names) == 1, f"Found vocab, model, and loss files associated to multiple datasets: {dataset_names}!"
     dataset_name = list(dataset_names)[0]
 
     # Match vocab and model files
@@ -170,11 +198,16 @@ def load_clm(
     for fold_iter in vocab_paths.keys():
         vocab_path = vocab_paths[fold_iter]["vocab_path"]
         model_path = model_paths[fold_iter]["model_path"]
+        loss_path = loss_paths[fold_iter]["loss_path"]
         folds.append(Fold(
-            fold_iter=int(fold_iter),
+            fold_iter=int(fold_iter) + 1,  # 0-based, so increment with one
             vocab_path=Path(vocab_path),
             model_path=Path(model_path),
+            loss_path=Path(loss_path),
         ))
+
+    # Sort folds based on fold_iter
+    folds.sort(key=lambda x: x.fold_iter)
 
     return ModelConfig(
         model_type=model_type,
